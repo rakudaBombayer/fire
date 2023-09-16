@@ -1,13 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+//カーソルを移動させたい
 public class Cursor : MonoBehaviour
 {
-    //TODO クリックした場所にカーソルを移動させたい
-    //カーソルを移動させたい
-    //クリックした場所を取得したい
-
+    
     public void SetPosition(Transform target)
     {
         transform.position = target.position; 
@@ -21,7 +18,6 @@ public class Cursor : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("左クリックしたよ");
             Vector2 clickPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit2D = Physics2D.Raycast(
                 clickPosition,
@@ -30,6 +26,8 @@ public class Cursor : MonoBehaviour
             if (hit2D && hit2D.collider)
             {
                 SetPosition(hit2D.transform);
+                TileObj tileObj = hit2D.collider.GetComponent<TileObj>();
+                Debug.Log(tileObj.positionInt);
             }
         }
     }
