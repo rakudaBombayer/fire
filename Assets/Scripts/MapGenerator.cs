@@ -35,7 +35,7 @@ public class MapGenerator : MonoBehaviour
                 TileObj tileObj = null;
                 if (rate < WATER_RATE)
                 {
-                   tileObj = Instantiate(waterPrefab, pos, Quaternion.identity, tileParent);
+                    tileObj = Instantiate(waterPrefab, pos, Quaternion.identity, tileParent);
                 }
                 else if (rate < FOREST_RATE)
                 {
