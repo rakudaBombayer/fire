@@ -8,11 +8,12 @@ public class Character : MonoBehaviour
     [SerializeField] Vector2Int positonInt;
     void Start()
     {
-        transform.position = (Vector2)positonInt; 
+        transform.position = (Vector2)positonInt;
     }
 }
 
 
 // 選択タイルの取得
 // キャラの選択
+// 選択タイルの座標とキャラの座標を比較する
 //キャラの移動
