@@ -9,7 +9,9 @@ using UnityEngine;
 /// </summary>
 public class MapGenerator : MonoBehaviour
 {
-    [SerializeField] TileObj tileObjPrefab;
+    [SerializeField] TileObj grassPrefab;
+    [SerializeField] TileObj forestPrefab;
+    [SerializeField] TileObj waterPrefab;
     [SerializeField] Transform tileParent;
 
     const int WIDTH = 15;
@@ -27,7 +29,7 @@ public class MapGenerator : MonoBehaviour
             for (int y = 0; y < HEIGHT; y++)
             {   
                 Vector2 pos = new Vector2(x, y) + offset;
-                Instantiate(tileObjPrefab, pos, Quaternion.identity, tileParent);
+                Instantiate(grassPrefab, pos, Quaternion.identity, tileParent);
             }
         }
     }
