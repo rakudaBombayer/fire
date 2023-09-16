@@ -22,6 +22,16 @@ public class Cursor : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Debug.Log("左クリックしたよ");
+            Vector2 clickPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit2D = Physics2D.Raycast(
+                clickPosition,
+                Vector2.down 
+            );
+            if (hit2D && hit2D.collider)
+            {
+                SetPosition(hit2D.transform);
+            }
         }
     }
+
 }
