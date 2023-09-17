@@ -5,6 +5,7 @@ using UnityEngine;
 public class MapManager : MonoBehaviour
 {
     [SerializeField] Cursor cursor;
+    [SerializeField] CharactersManager charactersManager;
 
     //クリックした場所を取得したい
     //クリック判定 =>Update関数の中でInputを使う
@@ -23,7 +24,18 @@ public class MapManager : MonoBehaviour
             {
                 cursor.SetPosition(hit2D.transform);
                 TileObj tileObj = hit2D.collider.GetComponent<TileObj>();
-                Debug.Log(tileObj.positionInt);
+                //選択タイルの座標
+                
+                //キャラの座標
+                Character character = charactersManager.GetCharacter(tileObj.positionInt);
+                if (character)
+                {
+                    Debug.Log("いる");
+                }
+                else
+                {
+                    Debug.Log("いない");
+                }
             }
         }
     }

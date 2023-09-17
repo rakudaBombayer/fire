@@ -8,8 +8,19 @@ public class CharactersManager : MonoBehaviour
     public List<Character> characters = new List<Character>();
     void Start()
     {
-        //データ型が一致する小要素を取得する
+        //データ型が一致する子要素を取得する
         GetComponentsInChildren(characters);
     }
-
+    // 座標が一致するキャラを渡す
+    public Character GetCharacter(Vector2Int pos)
+    {
+        foreach (var character in characters)
+        {
+            if (character.Position == pos)
+            {
+                return character;
+            }
+        }
+        return null;
+    }
 }

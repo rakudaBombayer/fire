@@ -41,3 +41,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Map
+    uniqueID: 2283791753
+    locked: 0
+  - name: Character
+    uniqueID: 4145367891
+    locked: 0
+  - name: Cursor
+    uniqueID: 1661263269
+    locked: 0
