@@ -9,10 +9,12 @@ public class MapManager : MonoBehaviour
     [SerializeField] MapGenerator mapGenerator;
 
     Character selectedCharacter;
+    List<TileObj> tileObjs = new List<TileObj>();
 
+    List<TileObj> movableTiles = new List<TileObj>();
     private void Start()
     {
-        mapGenerator.Generate();
+        tileObjs = mapGenerator.Generate();
     }
 
     //クリックした場所を取得したい
@@ -42,6 +44,9 @@ public class MapManager : MonoBehaviour
                     Debug.Log("いる");
                     //選択キャラの保持
                     selectedCharacter = character;
+                    ResetMovablePanels();
+                    //移動範囲を表示
+                    ShowMovablePanels(selectedCharacter);
                 }
                 else
                 {
@@ -51,6 +56,7 @@ public class MapManager : MonoBehaviour
                     {
                         // selectedCharacterをtileObjまで移動させる
                         selectedCharacter.Move(tileObj.positionInt);
+                        ResetMovablePanels();
                         selectedCharacter = null;
                     }
                 }
@@ -58,4 +64,29 @@ public class MapManager : MonoBehaviour
         }
     }
 
+    //TODO 移動範囲を表示する
+    void ShowMovablePanels(Character character)
+    {
+        // characterから上下左右のタイルを探す
+        // characterと同じ場所のタイル
+            movableTiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position));
+            movableTiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position + Vector2Int.up));
+            movableTiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position + Vector2Int.down));
+            movableTiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position + Vector2Int.left));
+            movableTiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position + Vector2Int.right));
+
+        foreach (var tile in movableTiles)
+        {   
+            tile.ShowMovablePanel(true);
+        }
+    }
+
+    void ResetMovablePanels()
+    {
+        foreach (var tile in movableTiles)
+        {
+            tile.ShowMovablePanel(false);
+        }
+        movableTiles.Clear();
+    }
 }
