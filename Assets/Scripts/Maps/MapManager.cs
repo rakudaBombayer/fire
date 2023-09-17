@@ -6,6 +6,14 @@ public class MapManager : MonoBehaviour
 {
     [SerializeField] Cursor cursor;
     [SerializeField] CharactersManager charactersManager;
+    [SerializeField] MapGenerator mapGenerator;
+
+    Character selectedCharacter;
+
+    private void Start()
+    {
+        mapGenerator.Generate();
+    }
 
     //クリックした場所を取得したい
     //クリック判定 =>Update関数の中でInputを使う
@@ -20,6 +28,7 @@ public class MapManager : MonoBehaviour
                 clickPosition,
                 Vector2.down 
             );
+            //Rayを飛ばしてヒットしたタイルを取得する
             if (hit2D && hit2D.collider)
             {
                 cursor.SetPosition(hit2D.transform);
@@ -31,10 +40,19 @@ public class MapManager : MonoBehaviour
                 if (character)
                 {
                     Debug.Log("いる");
+                    //選択キャラの保持
+                    selectedCharacter = character;
                 }
                 else
                 {
-                    Debug.Log("いない");
+                    Debug.Log("クリックした場所にキャラがいない");
+                    //キャラを保持しているなら、クリックしたタイルの場所に移動させる
+                    if (selectedCharacter)
+                    {
+                        // selectedCharacterをtileObjまで移動させる
+                        selectedCharacter.Move(tileObj.positionInt);
+                        selectedCharacter = null;
+                    }
                 }
             }
         }
