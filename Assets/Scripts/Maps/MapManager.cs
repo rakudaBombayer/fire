@@ -54,10 +54,14 @@ public class MapManager : MonoBehaviour
                     //キャラを保持しているなら、クリックしたタイルの場所に移動させる
                     if (selectedCharacter)
                     {
-                        // selectedCharacterをtileObjまで移動させる
-                        selectedCharacter.Move(tileObj.positionInt);
-                        ResetMovablePanels();
-                        selectedCharacter = null;
+                        // クリックしたタイルtileObjが移動範囲に含まれるなら
+                        if (movableTiles.Contains(tileObj))
+                        {
+                            // selectedCharacterをtileObjまで移動させる
+                            selectedCharacter.Move(tileObj.positionInt);
+                        }
+                            ResetMovablePanels();
+                            selectedCharacter = null;                       
                     }
                 }
             }
