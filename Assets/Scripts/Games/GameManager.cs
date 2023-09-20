@@ -110,10 +110,12 @@ public class GameManager : MonoBehaviour
                             // コマンドの表示
                             actionCommandUI.Show(true);
                         }
-                            mapManager.ResetMovablePanels(movableTiles);
-                            selectedCharacter = null;                       
+                            mapManager.ResetMovablePanels(movableTiles);                       
                 }
         }
+
+    //TODO: 攻撃範囲ないの敵クリックしたら攻撃する
+    //・いない場合は待機ボタンを押してターン終了
 
     public void OnAttackButton()
     {
