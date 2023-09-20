@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
     {
         PlayerCharacterSelection, // キャラ選択
         PlayerCharacterMoveSelection,// キャラ移動
+        PlayerCharacterCommandSelection,// コマンド選択
+        PlayerCharacterTargetSelection,// 攻撃対象選択
         EnemyCharacterSelection,
         EnemyCharacterMoveSelection,
     }
@@ -21,10 +23,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] Phase phase;
     [SerializeField] CharactersManager charactersManager;
     [SerializeField] MapManager mapManager;
+    [SerializeField] ActionCommandUI actionCommandUI;
 
     private void Start()
     {
         phase = Phase.PlayerCharacterSelection;
+        actionCommandUI.Show(false);
     }
     //PlayerCharacterSelection, //キャラ選択
     // PlayerCharacterSelection, // キャラ移動
@@ -100,9 +104,30 @@ public class GameManager : MonoBehaviour
                         {
                             // selectedCharacterをtileObjまで移動させる
                             selectedCharacter.Move(clickTileObj.positionInt);
+                            phase = Phase.PlayerCharacterCommandSelection;
+                            // コマンドの表示
+                            actionCommandUI.Show(true);
                         }
                             mapManager.ResetMovablePanels(movableTiles);
                             selectedCharacter = null;                       
-                    }
+                }
+        }
+
+    public void OnAttackButton()
+    {
+        Debug.Log("攻撃選択");
+    }
+    public void OnWaiteButton()
+    {
+        Debug.Log("待機選択");
+        OnPlayerTurnEnd();
+    }
+
+    void OnPlayerTurnEnd()
+    {
+        //敵のフェーズへ
+        Debug.Log("相手ターン");
+        phase = Phase.EnemyCharacterSelection;
+        actionCommandUI.Show(false);
     }
 } 
