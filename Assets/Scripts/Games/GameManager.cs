@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
     Character selectedCharacter;
     //選択キャラの移動可能範囲の保持
     List<TileObj> movableTiles = new List<TileObj>();
+    //選択キャラの攻撃範囲の保持
+    List<TileObj> attackableTiles = new List<TileObj>();
 
     [SerializeField] Phase phase;
     [SerializeField] CharactersManager charactersManager;
@@ -116,6 +118,11 @@ public class GameManager : MonoBehaviour
     public void OnAttackButton()
     {
         Debug.Log("攻撃選択");
+        phase = Phase.PlayerCharacterTargetSelection;
+        //攻撃範囲の表示    
+        mapManager.ResetAttackablePanels(attackableTiles);
+        mapManager.ShowAttackablePanels(selectedCharacter, attackableTiles);
+        
     }
     public void OnWaiteButton()
     {
