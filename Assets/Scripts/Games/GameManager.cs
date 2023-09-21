@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] CharactersManager charactersManager;
     [SerializeField] MapManager mapManager;
     [SerializeField] ActionCommandUI actionCommandUI;
+    [SerializeField] StatusUI statusUI;
 
     private void Start()
     {
@@ -73,7 +74,8 @@ public class GameManager : MonoBehaviour
                     selectedCharacter = character;
                     mapManager.ResetMovablePanels(movableTiles);
                     //移動範囲を表示
-                    mapManager.ShowMovablePanels(selectedCharacter, movableTiles);      
+                    mapManager.ShowMovablePanels(selectedCharacter, movableTiles);
+                    statusUI.Show(selectedCharacter);
                     return true;
                 }
                 return false;
@@ -85,7 +87,7 @@ public class GameManager : MonoBehaviour
         //その上にキャラがいるなら
         TileObj clickTileObj = mapManager.GetClickTileObj();
         if(IsClickCharacter(clickTileObj))
-        {
+        {   
             phase = Phase.PlayerCharacterMoveSelection;
         }
    } 

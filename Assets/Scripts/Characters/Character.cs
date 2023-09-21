@@ -6,13 +6,21 @@ public class Character : MonoBehaviour
 {
     // Start is called before the first frame update
 
+    [SerializeField] new string name;
     [SerializeField] int hp;
+    [SerializeField] int maxHp;
     [SerializeField] int at;
+    [SerializeField] int df;
     [SerializeField] bool isEnemy;
     [SerializeField] Vector2Int positionInt;
     
     public Vector2Int Position { get => positionInt;}
     public bool IsEnemy { get => isEnemy; }
+    public string Name { get => name; }
+    public int Hp { get => hp; }
+    public int At { get => at; }
+    public int Df { get => df; } 
+    public int MaxHp { get => maxHp; }
 
     void Start()
     {
