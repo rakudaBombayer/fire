@@ -5,8 +5,12 @@ using UnityEngine;
 public class Character : MonoBehaviour
 {
     // Start is called before the first frame update
+    [SerializeField] bool isEnemy;
     [SerializeField] Vector2Int positionInt;
+    
     public Vector2Int Position { get => positionInt;}
+    public bool IsEnemy { get => isEnemy; }
+    
     void Start()
     {
         transform.position = (Vector2)positionInt;

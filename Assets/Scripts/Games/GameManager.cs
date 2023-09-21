@@ -55,6 +55,9 @@ public class GameManager : MonoBehaviour
             case Phase.PlayerCharacterMoveSelection:
                 PlayerCharacterMoveSelection();
                 break;
+            case Phase.PlayerCharacterTargetSelection:
+                PlayerCharacterTargetSelection();
+                break;
         }
     }
 
@@ -113,10 +116,24 @@ public class GameManager : MonoBehaviour
                             mapManager.ResetMovablePanels(movableTiles);                       
                 }
         }
+    void PlayerCharacterTargetSelection()
+   {    
+        //TODO選択したキャラを移動させる
+        TileObj clickTileObj = mapManager.GetClickTileObj();
 
-    //TODO: 攻撃範囲ないの敵クリックしたら攻撃する
-    //・いない場合は待機ボタンを押してターン終了
-
+        // 攻撃の範囲内をクリックしたら
+        if (attackableTiles.Contains(clickTileObj))
+        {
+            //敵キャラクターがいるなら TODO:キャラの判定はできるけど敵キャラの判定はできない
+            Character character = charactersManager.GetCharacter(clickTileObj.positionInt);
+            if (character && character.IsEnemy)
+            {
+                Debug.Log("攻撃処理");
+                mapManager.ResetAttackablePanels(attackableTiles);
+                actionCommandUI.Show(false);
+            }
+        }
+    }
     public void OnAttackButton()
     {
         Debug.Log("攻撃選択");
@@ -124,7 +141,7 @@ public class GameManager : MonoBehaviour
         //攻撃範囲の表示    
         mapManager.ResetAttackablePanels(attackableTiles);
         mapManager.ShowAttackablePanels(selectedCharacter, attackableTiles);
-        
+        actionCommandUI.ShowAttackButton(false);
     }
     public void OnWaiteButton()
     {
@@ -138,5 +155,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("相手ターン");
         phase = Phase.EnemyCharacterSelection;
         actionCommandUI.Show(false);
+        selectedCharacter = null;
+        mapManager.ResetAttackablePanels(attackableTiles);
     }
 } 
