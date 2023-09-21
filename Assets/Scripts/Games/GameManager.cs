@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     //選択キャラの攻撃範囲の保持
     List<TileObj> attackableTiles = new List<TileObj>();
 
+
     [SerializeField] Phase phase;
     [SerializeField] CharactersManager charactersManager;
     [SerializeField] MapManager mapManager;
@@ -128,9 +129,11 @@ public class GameManager : MonoBehaviour
             Character targetChara = charactersManager.GetCharacter(clickTileObj.positionInt);
             if (targetChara && targetChara.IsEnemy)
             {   
+                //攻撃処理
                 selectedCharacter.Attack(targetChara);
                 mapManager.ResetAttackablePanels(attackableTiles);
                 actionCommandUI.Show(false);
+                OnPlayerTurnEnd();
             }
         }
     }
@@ -155,5 +158,38 @@ public class GameManager : MonoBehaviour
         actionCommandUI.Show(false);
         selectedCharacter = null;
         mapManager.ResetAttackablePanels(attackableTiles);
+        EnemyCharacterSelection();
+    }
+
+    //キャラ選択
+    void EnemyCharacterSelection()
+    {   
+        Debug.Log("敵キャラ選択");
+        //--- characterManagerからランダムに敵を持ってくる
+        selectedCharacter = charactersManager.GetRandomEnemy();
+
+        mapManager.ResetMovablePanels(movableTiles);
+        //移動範囲を表示
+        mapManager.ShowMovablePanels(selectedCharacter, movableTiles);  
+        EnemyCharacterMoveSelection();
+    }
+    // 移動
+    void EnemyCharacterMoveSelection()
+    {
+        //---
+        Debug.Log("敵キャラの移動");
+        //ランダムに移動場所を決めて移動する
+        int r = Random.Range(0, movableTiles.Count);
+        selectedCharacter.Move(movableTiles[r].positionInt);
+        mapManager.ResetMovablePanels(movableTiles);
+        OnEnemyTurnEnd();
+    }
+
+    void OnEnemyTurnEnd()
+    {
+        //プレイヤーのフェーズへ
+        Debug.Log("敵ターン終了");
+        selectedCharacter = null;
+        phase = Phase.PlayerCharacterSelection;
     }
 } 
