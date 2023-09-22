@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] MapManager mapManager;
     [SerializeField] ActionCommandUI actionCommandUI;
     [SerializeField] StatusUI statusUI;
+    [SerializeField] DamageUI damageUI;
 
     private void Start()
     {
@@ -132,9 +133,10 @@ public class GameManager : MonoBehaviour
             if (targetChara && targetChara.IsEnemy)
             {   
                 //攻撃処理
-                selectedCharacter.Attack(targetChara);
+                int damage = selectedCharacter.Attack(targetChara);
                 mapManager.ResetAttackablePanels(attackableTiles);
                 actionCommandUI.Show(false);
+                damageUI.Show(targetChara, damage);            
                 OnPlayerTurnEnd();
             }
         }
