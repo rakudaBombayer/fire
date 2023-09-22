@@ -5,12 +5,20 @@ using UnityEngine;
 public class TileObj : MonoBehaviour
 {
     public Vector2Int positionInt;
+    [SerializeField] int cost;// 移動コスト
 
     [SerializeField] GameObject movablePanel;
+
+    public int Cost { get => cost; }
 
     public void ShowMovablePanel(bool isActive)
     {
         movablePanel.SetActive(isActive);
+    }
+
+    public void SetCost(int cost)
+    {
+        this.cost = cost;
     }
 }
 
