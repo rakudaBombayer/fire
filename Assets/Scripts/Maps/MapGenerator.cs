@@ -14,16 +14,16 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] TileObj waterPrefab;
     [SerializeField] Transform tileParent;
 
-    const int WIDTH = 15;
-    const int HEIGHT = 9;
+    public const int WIDTH = 15;
+    public const int HEIGHT = 9;
     const int WATER_RATE = 10;
     const int FOREST_RATE = 30;
     
 
     // Map生成
-    public List<TileObj> Generate()
+    public TileObj[,] Generate()
     {   
-        List<TileObj> tileObjs = new List<TileObj>();
+        TileObj[,] tileObjs = new TileObj[WIDTH, HEIGHT];
 
         Vector2 offset = new Vector2(-WIDTH/2, -HEIGHT/2);
         for (int x = 0; x < WIDTH; x++)
@@ -54,7 +54,8 @@ public class MapGenerator : MonoBehaviour
                     tileObj.SetCost(-1);
                 }
                 tileObj.positionInt = new Vector2Int((int)pos.x, (int)pos.y);
-                tileObjs.Add(tileObj);
+                tileObjs[x, y] = tileObj;
+                tileObj.SetIndex(x, y);
             }
         }
         return tileObjs;

@@ -6,13 +6,15 @@ public class MapManager : MonoBehaviour
 {
     [SerializeField] Cursor cursor;
     [SerializeField] MapGenerator mapGenerator;
+    [SerializeField] CalcMoveRange calcMoveRange;
 
     //生成したマップを管理する
-    List<TileObj> tileObjs = new List<TileObj>();
-   
+    TileObj[,] tileObjs;
+
     private void Start()
     {
         tileObjs = mapGenerator.Generate();
+        calcMoveRange.SetMoveCost(tileObjs);
     }
 
     //クリックしたタイル取得する
@@ -29,18 +31,50 @@ public class MapManager : MonoBehaviour
             return null;
     }
 
-    
+    TileObj GetTileOn(Character character)
+    {
+        for (int i = 0; i< tileObjs.GetLength(0); i++)
+        {
+            for (int j = 0; j < tileObjs.GetLength(1); j++)
+            {
+                if (tileObjs[i, j].positionInt == character.Position)
+                {
+                    return tileObjs[i, j];
+                }
+            }
+        }
+        return null;
+    }
 
     //移動範囲を表示する
     public void ShowMovablePanels(Character character, List<TileObj> movableTiles)
-    {
-        // characterから上下左右のタイルを探す
+    {   
+        // エラーの原因:PlayerのPositionを入れているから、マイナスを入れてしまう
+        // 何番目のタイルなのか(index)が入る
+
+        // characterが乗っているタイルのIndexを取得する
+        Vector2Int index = GetTileOn(character).Index;
+
+        int[,] result = calcMoveRange.StartSearch(index.x, index.y, character.MoveRange);
+
+        for (int i = 0; i< tileObjs.GetLength(0); i++)
+        {
+            for (int j = 0; j < tileObjs.GetLength(1); j++)
+            {   
+                // 0以上なら移動範囲として追加する
+                if (result[i, j] >= 0)
+                {
+                    movableTiles.Add(tileObjs[i, j]);
+                }
+            }
+        }
+
         // characterと同じ場所のタイル
-            movableTiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position));
-            movableTiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position + Vector2Int.up));
-            movableTiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position + Vector2Int.down));
-            movableTiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position + Vector2Int.left));
-            movableTiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position + Vector2Int.right));
+            // movableTiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position));
+            // movableTiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position + Vector2Int.up));
+            // movableTiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position + Vector2Int.down));
+            // movableTiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position + Vector2Int.left));
+            // movableTiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position + Vector2Int.right));
 
             // nullを除去
             movableTiles.RemoveAll(tile => tile == null);
@@ -64,11 +98,11 @@ public class MapManager : MonoBehaviour
     public void ShowAttackablePanels(Character character, List<TileObj> tiles)
     {
         // characterから上下左右のタイルを探す
-            tiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position));
-            tiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position + Vector2Int.up));
-            tiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position + Vector2Int.down));
-            tiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position + Vector2Int.left));
-            tiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position + Vector2Int.right));
+            // tiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position));
+            // tiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position + Vector2Int.up));
+            // tiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position + Vector2Int.down));
+            // tiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position + Vector2Int.left));
+            // tiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position + Vector2Int.right));
 
         foreach (var tile in tiles)
         {   
