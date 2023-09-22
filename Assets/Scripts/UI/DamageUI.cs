@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.Events;
 
 public class DamageUI : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class DamageUI : MonoBehaviour
     [SerializeField] Text hpText;
     [SerializeField] Text damageText;
     [SerializeField] Image hpBar;
+
+    public UnityAction OnEndAnim; // ゲージのアニメーションが終了した時に実行したいことを登録
 
     // Statusの表示
     public void Show(Character character, int damage)
@@ -28,5 +31,7 @@ public class DamageUI : MonoBehaviour
     public void Hide()
     {
         gameObject.SetActive(false);
+        // この時にGameManagerのOnPlayerTurnを実行したい
+        OnEndAnim?.Invoke();
     }
 }

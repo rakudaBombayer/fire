@@ -31,7 +31,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] DamageUI damageUI;
 
     private void Start()
-    {
+    {   
+        damageUI.OnEndAnim += OnPlayerTurnEnd;
         phase = Phase.PlayerCharacterSelection;
         actionCommandUI.Show(false);
     }
@@ -137,7 +138,6 @@ public class GameManager : MonoBehaviour
                 mapManager.ResetAttackablePanels(attackableTiles);
                 actionCommandUI.Show(false);
                 damageUI.Show(targetChara, damage);            
-                OnPlayerTurnEnd();
             }
         }
     }
