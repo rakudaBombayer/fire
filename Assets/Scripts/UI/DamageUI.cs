@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class DamageUI : MonoBehaviour
 {
@@ -17,8 +18,11 @@ public class DamageUI : MonoBehaviour
         nameText.text = character.Name;
         hpText.text = $"HP:{character.Hp}/{character.MaxHp}";
         damageText.text = $"{damage}ダメージ";
-        hpBar.fillAmount = (float)character.Hp / (float)character.MaxHp;
-        Invoke("Hide", 5f);
+        // hpBar.fillAmount = (float)character.Hp / (float)character.MaxHp;
+        float endValue = (float)character.Hp / (float)character.MaxHp;
+        hpBar.DOFillAmount(endValue, 0.3f).SetEase(Ease.Linear);
+        //表示の消える速度
+        Invoke("Hide", 1f);
     }
 
     public void Hide()

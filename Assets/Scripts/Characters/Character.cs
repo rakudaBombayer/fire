@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class Character : MonoBehaviour
 {
@@ -31,7 +32,8 @@ public class Character : MonoBehaviour
     public void Move(Vector2Int pos)
     {
         positionInt = pos;
-        transform.position = (Vector2)positionInt;
+        // transform.position = (Vector2)positionInt;
+        transform.DOMove((Vector2)positionInt, 0.3f).SetEase(Ease.Linear);
     }
 
     public int Damage(int value)
