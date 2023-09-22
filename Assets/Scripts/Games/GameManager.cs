@@ -29,12 +29,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] ActionCommandUI actionCommandUI;
     [SerializeField] StatusUI statusUI;
     [SerializeField] DamageUI damageUI;
+    [SerializeField] PhasePanelUI phasePanelUI;
 
     private void Start()
     {   
         damageUI.OnEndAnim += OnPlayerTurnEnd;
         phase = Phase.PlayerCharacterSelection;
         actionCommandUI.Show(false);
+        StartCoroutine(phasePanelUI.PanelAnim());
     }
     //PlayerCharacterSelection, //キャラ選択
     // PlayerCharacterSelection, // キャラ移動
@@ -147,6 +149,7 @@ public class GameManager : MonoBehaviour
         //攻撃範囲の表示    
         mapManager.ResetAttackablePanels(attackableTiles);
         mapManager.ShowAttackablePanels(selectedCharacter, attackableTiles);
+        StartCoroutine(phasePanelUI.PanelAnim());
         actionCommandUI.ShowAttackButton(false);
     }
     public void OnWaiteButton()
@@ -162,7 +165,8 @@ public class GameManager : MonoBehaviour
         actionCommandUI.Show(false);
         selectedCharacter = null;
         mapManager.ResetAttackablePanels(attackableTiles);
-        EnemyCharacterSelection();
+        StartCoroutine(phasePanelUI.PanelAnim(EnemyCharacterSelection));//フェーズアニメを実行
+        //EnemyCharacterSelection();//フェーズアニメが終わったら実行したい
     }
 
     //キャラ選択
