@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
         damageUI.OnEndAnim += OnPlayerTurnEnd;
         phase = Phase.PlayerCharacterSelection;
         actionCommandUI.Show(false);
-        StartCoroutine(phasePanelUI.PanelAnim());
+        StartCoroutine(phasePanelUI.PanelAnim("ふみやのターン"));
     }
     //PlayerCharacterSelection, //キャラ選択
     // PlayerCharacterSelection, // キャラ移動
@@ -149,7 +149,6 @@ public class GameManager : MonoBehaviour
         //攻撃範囲の表示    
         mapManager.ResetAttackablePanels(attackableTiles);
         mapManager.ShowAttackablePanels(selectedCharacter, attackableTiles);
-        StartCoroutine(phasePanelUI.PanelAnim());
         actionCommandUI.ShowAttackButton(false);
     }
     public void OnWaiteButton()
@@ -165,7 +164,7 @@ public class GameManager : MonoBehaviour
         actionCommandUI.Show(false);
         selectedCharacter = null;
         mapManager.ResetAttackablePanels(attackableTiles);
-        StartCoroutine(phasePanelUI.PanelAnim(EnemyCharacterSelection));//フェーズアニメを実行
+        StartCoroutine(phasePanelUI.PanelAnim("ジーズのターン", EnemyCharacterSelection));//フェーズアニメを実行
         //EnemyCharacterSelection();//フェーズアニメが終わったら実行したい
     }
 
@@ -184,8 +183,6 @@ public class GameManager : MonoBehaviour
     // 移動
     void EnemyCharacterMoveSelection()
     {
-        //---
-        Debug.Log("敵キャラの移動");
         //ランダムに移動場所を決めて移動する
         int r = Random.Range(0, movableTiles.Count);
         selectedCharacter.Move(movableTiles[r].positionInt);
@@ -196,8 +193,8 @@ public class GameManager : MonoBehaviour
     void OnEnemyTurnEnd()
     {
         //プレイヤーのフェーズへ
-        Debug.Log("敵ターン終了");
         selectedCharacter = null;
         phase = Phase.PlayerCharacterSelection;
+        StartCoroutine(phasePanelUI.PanelAnim("ふみやのターン"));
     }
 } 
