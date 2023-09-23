@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] StatusUI statusUI;
     [SerializeField] DamageUI damageUI;
     [SerializeField] PhasePanelUI phasePanelUI;
+    [SerializeField] GameObject turnEndButton;
 
     private void Start()
     {   
@@ -38,6 +39,7 @@ public class GameManager : MonoBehaviour
         phase = Phase.PlayerCharacterSelection;
         actionCommandUI.Show(false);
         StartCoroutine(phasePanelUI.PanelAnim("ふみやのターン"));
+        turnEndButton.SetActive(true);
     }
     //PlayerCharacterSelection, //キャラ選択
     // PlayerCharacterSelection, // キャラ移動
@@ -166,6 +168,7 @@ public class GameManager : MonoBehaviour
         actionCommandUI.Show(false);
         selectedCharacter = null;
         mapManager.ResetAttackablePanels(attackableTiles);
+        phase = Phase.PlayerCharacterSelection;
     }
 
     void OnPlayerTurnEnd()
@@ -209,14 +212,19 @@ public class GameManager : MonoBehaviour
         selectedCharacter = null;
         phase = Phase.PlayerCharacterSelection;
         StartCoroutine(phasePanelUI.PanelAnim("ふみやのターン"));
+        turnEndButton.SetActive(true);
     }
 
     public void OnTurnENdButton()
     {
         OnPlayerTurnEnd();
+        turnEndButton.SetActive(false);
     }
 } 
 
 //TODO:エラー
 // エラーの解消
 //連続してキャラを選べない
+//
+//次
+//一度行動した場合に勝手に相手ターンになってしまう
