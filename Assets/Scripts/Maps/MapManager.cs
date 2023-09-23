@@ -98,12 +98,19 @@ public class MapManager : MonoBehaviour
     public void ShowAttackablePanels(Character character, List<TileObj> tiles)
     {
         // characterから上下左右のタイルを探す
+        //tiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position));
+        //キャラから上下左右のタイルを探す
+        TileObj currentTile = GetTileOn(character);
+        tiles.Add(tileObjs[currentTile.Index.x, currentTile.Index.y + 1]);
+        tiles.Add(tileObjs[currentTile.Index.x, currentTile.Index.y - 1]);
+        tiles.Add(tileObjs[currentTile.Index.x + 1, currentTile.Index.y]);
+        tiles.Add(tileObjs[currentTile.Index.x - 1, currentTile.Index.y]);
+
             // tiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position));
             // tiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position + Vector2Int.up));
             // tiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position + Vector2Int.down));
             // tiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position + Vector2Int.left));
             // tiles.Add(tileObjs.Find(tile => tile.positionInt == character.Position + Vector2Int.right));
-
         foreach (var tile in tiles)
         {   
             // TODO:攻撃用に変更
