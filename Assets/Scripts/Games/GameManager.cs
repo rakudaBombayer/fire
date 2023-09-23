@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {   
-        damageUI.OnEndAnim += OnPlayerTurnEnd;
+        damageUI.OnEndAnim += OnAttacked;
         phase = Phase.PlayerCharacterSelection;
         actionCommandUI.Show(false);
         StartCoroutine(phasePanelUI.PanelAnim("ふみやのターン"));
@@ -171,6 +171,18 @@ public class GameManager : MonoBehaviour
         phase = Phase.PlayerCharacterSelection;
     }
 
+    // 攻撃が終わったよ
+    void OnAttacked()
+    {   
+        if(phase == Phase.PlayerCharacterTargetSelection)
+        {
+            actionCommandUI.Show(false);
+            selectedCharacter = null;
+            mapManager.ResetAttackablePanels(attackableTiles);
+            phase = Phase.PlayerCharacterSelection;
+        }
+        
+    }
     void OnPlayerTurnEnd()
     {
         //敵のフェーズへ
@@ -223,8 +235,6 @@ public class GameManager : MonoBehaviour
 } 
 
 //TODO:エラー
-// エラーの解消
-//連続してキャラを選べない
-//
-//次
 //一度行動した場合に勝手に相手ターンになってしまう
+// ・攻撃した場合に勝手に相手ターンになってしまうバグ
+
