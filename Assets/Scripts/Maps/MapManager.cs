@@ -14,7 +14,6 @@ public class MapManager : MonoBehaviour
     private void Start()
     {
         tileObjs = mapGenerator.Generate();
-        calcMoveRange.SetMoveCost(tileObjs);
     }
 
     //クリックしたタイル取得する
@@ -54,7 +53,7 @@ public class MapManager : MonoBehaviour
 
         // characterが乗っているタイルのIndexを取得する
         Vector2Int index = GetTileOn(character).Index;
-
+        calcMoveRange.SetMoveCost(tileObjs);
         int[,] result = calcMoveRange.StartSearch(index.x, index.y, character.MoveRange);
 
         for (int i = 0; i< tileObjs.GetLength(0); i++)
