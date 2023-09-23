@@ -120,4 +120,9 @@ public class MapManager : MonoBehaviour
         }
         tiles.Clear();
     }
+
+    public List<TileObj> GetRoot(Character character, TileObj goalTile)
+    {
+        return calcMoveRange.GetRoot(GetTileOn(character).Index, goalTile.Index, tileObjs);
+    }
 }

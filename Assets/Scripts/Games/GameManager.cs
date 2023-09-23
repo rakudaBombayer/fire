@@ -115,7 +115,8 @@ public class GameManager : MonoBehaviour
                         if (movableTiles.Contains(clickTileObj))
                         {
                             // selectedCharacterをtileObjまで移動させる
-                            selectedCharacter.Move(clickTileObj.positionInt);
+                            //TODO: 経路を取得して、移動する
+                            selectedCharacter.Move(clickTileObj.positionInt,mapManager.GetRoot(selectedCharacter,clickTileObj));
                             phase = Phase.PlayerCharacterCommandSelection;
                             // コマンドの表示
                             actionCommandUI.Show(true);
@@ -124,7 +125,7 @@ public class GameManager : MonoBehaviour
                 }
         }
     void PlayerCharacterTargetSelection()
-   {    
+    {    
         //TODO選択したキャラを移動させる
         TileObj clickTileObj = mapManager.GetClickTileObj();
 
@@ -185,7 +186,8 @@ public class GameManager : MonoBehaviour
     {
         //ランダムに移動場所を決めて移動する
         int r = Random.Range(0, movableTiles.Count);
-        selectedCharacter.Move(movableTiles[r].positionInt);
+        // selectedCharacter.Move(movableTiles[r].positionInt);
+        selectedCharacter.Move(movableTiles[r].positionInt, mapManager.GetRoot(selectedCharacter, movableTiles[r]));
         mapManager.ResetMovablePanels(movableTiles);
         OnEnemyTurnEnd();
     }
