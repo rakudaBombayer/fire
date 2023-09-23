@@ -13,6 +13,10 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] TileObj forestPrefab;
     [SerializeField] TileObj waterPrefab;
     [SerializeField] Transform tileParent;
+    [SerializeField] CharactersManager charactersManager;
+
+    // Prefabの多様化:バリアント
+    //割合に応じたPrefabの生成
 
     public const int WIDTH = 15;
     public const int HEIGHT = 9;
@@ -38,7 +42,15 @@ public class MapGenerator : MonoBehaviour
                 Vector2 pos = new Vector2(x, y) + offset;
                 int rate = Random.Range(0, 100); //0~99までの数字がランダムで1つ出る
                 TileObj tileObj = null;
-                if (rate < WATER_RATE)
+
+                //TODO キャラがいるなら平原を生成する
+                Character character = charactersManager.GetCharacter(pos);
+                if (character != null)
+                {
+                    tileObj = Instantiate(grassPrefab, pos, Quaternion.identity, tileParent);
+                    tileObj.SetCost(-1);
+                }
+                else if (rate < WATER_RATE)
                 {
                     tileObj = Instantiate(waterPrefab, pos, Quaternion.identity, tileParent);
                     tileObj.SetCost(-99);
