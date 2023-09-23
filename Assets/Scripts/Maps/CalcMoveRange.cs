@@ -153,7 +153,8 @@ public class CalcMoveRange : MonoBehaviour
             //例えばうえなら
             Vector2Int aroundIndex = searchIndex + around[i];
 
-            if(currentMovePower == _resultMoveRangeList[aroundIndex.x, aroundIndex.y])
+            // コストが一致するなら
+            if(IsMatch(currentMovePower, aroundIndex))
             {
                 // ルートに追加
                 root.Add(tileObjs[aroundIndex.x, aroundIndex.y]);
@@ -161,7 +162,27 @@ public class CalcMoveRange : MonoBehaviour
                 Search4Root(root, startIndex, aroundIndex, tileObjs);
             }
         }
-
     }
-}
+
+    //調べる場所が範囲外でエラーになる
+    //範囲外なら「調べない」にすればいい
+    bool IsMatch(int currentMovePower, Vector2Int aroundIndex)
+    {       
+            // 範囲外ならfalse
+            if(aroundIndex.x < 0 || aroundIndex.x >= _resultMoveRangeList.GetLength(0))
+            {
+                return false;
+            }
+            if(aroundIndex.y < 0 || aroundIndex.y >= _resultMoveRangeList.GetLength(1))
+            {
+                return false;
+            }
+            // 一致するならtrue
+            if(currentMovePower == _resultMoveRangeList[aroundIndex.x, aroundIndex.y])
+            {
+                return true;
+            }
+            return false;
+        }
+    }
 
