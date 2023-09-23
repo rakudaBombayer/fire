@@ -82,17 +82,22 @@ public class GameManager : MonoBehaviour
     {
         Character character = charactersManager.GetCharacter(clickTileObj.positionInt);
                 if (character)
-                {
+                {   
                     //選択キャラの保持
                     selectedCharacter = character;
-                    mapManager.ResetMovablePanels(movableTiles);
-                    //移動範囲を表示
-                    mapManager.ShowMovablePanels(selectedCharacter, movableTiles);
+                    // キャラのステータスを表示
                     statusUI.Show(selectedCharacter);
-                    return true;
+                    // もし自分のキャラが動いていないなら,移動範囲を表示
+                    if(character.IsMoved == false && character.IsEnemy == false)
+                    {
+                        mapManager.ResetMovablePanels(movableTiles);
+                        //移動範囲を表示
+                        mapManager.ShowMovablePanels(selectedCharacter, movableTiles);
+                        return true;
+                    }
                 }
                 return false;
-    }
+        }
 
    void PlayerCharacterSelection()
    {    
@@ -225,6 +230,13 @@ public class GameManager : MonoBehaviour
         phase = Phase.PlayerCharacterSelection;
         StartCoroutine(phasePanelUI.PanelAnim("ふみやのターン"));
         turnEndButton.SetActive(true);
+        foreach (var chara in charactersManager.characters)
+        {
+            if (chara.IsEnemy == false)
+            {
+                chara.OnBeginTurn();
+            }
+        }
     }
 
     public void OnTurnENdButton()
@@ -235,6 +247,7 @@ public class GameManager : MonoBehaviour
 } 
 
 //TODO:エラー
-//一度行動した場合に勝手に相手ターンになってしまう
 // ・攻撃した場合に勝手に相手ターンになってしまうバグ
+//一度行動した場合に勝手に相手ターンになってしまう
+// => 移動したかどうかのフラグ(bool)をつくってやればいい
 
