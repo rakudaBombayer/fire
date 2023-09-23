@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class GameManager : MonoBehaviour
 {
@@ -52,7 +53,13 @@ public class GameManager : MonoBehaviour
     }
 
     void PlayerClickAction()
-    {
+    {   
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            //UIをクリックした場合
+            return;
+        }
+
         switch (phase)
         {
             case Phase.PlayerCharacterSelection:
@@ -88,8 +95,9 @@ public class GameManager : MonoBehaviour
    void PlayerCharacterSelection()
    {    
         //クリックしたタイルを取得して
-        //その上にキャラがいるなら
         TileObj clickTileObj = mapManager.GetClickTileObj();
+
+        //その上にキャラがいるなら
         if(IsClickCharacter(clickTileObj))
         {   
             phase = Phase.PlayerCharacterMoveSelection;
@@ -154,7 +162,10 @@ public class GameManager : MonoBehaviour
     }
     public void OnWaiteButton()
     {
-        OnPlayerTurnEnd();
+        // OnPlayerTurnEnd();
+        actionCommandUI.Show(false);
+        selectedCharacter = null;
+        mapManager.ResetAttackablePanels(attackableTiles);
     }
 
     void OnPlayerTurnEnd()
@@ -199,4 +210,13 @@ public class GameManager : MonoBehaviour
         phase = Phase.PlayerCharacterSelection;
         StartCoroutine(phasePanelUI.PanelAnim("ふみやのターン"));
     }
+
+    public void OnTurnENdButton()
+    {
+        OnPlayerTurnEnd();
+    }
 } 
+
+//TODO:エラー
+// エラーの解消
+//連続してキャラを選べない
