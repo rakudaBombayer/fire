@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class GameManager : MonoBehaviour
         PlayerCharacterTargetSelection,// 攻撃対象選択
         EnemyCharacterSelection,
         EnemyCharacterMoveSelection,
+        EnemyCharacterTargetSelection, // 攻撃対象選択
     }
 
     //選択キャラの保持
@@ -131,7 +133,7 @@ public class GameManager : MonoBehaviour
                         {
                             // selectedCharacterをtileObjまで移動させる
                             //TODO: 経路を取得して、移動する
-                            selectedCharacter.Move(clickTileObj.positionInt,mapManager.GetRoot(selectedCharacter,clickTileObj));
+                            selectedCharacter.Move(clickTileObj.positionInt, mapManager.GetRoot(selectedCharacter,clickTileObj), null);
                             phase = Phase.PlayerCharacterCommandSelection;
                             // コマンドの表示
                             actionCommandUI.Show(true);
@@ -159,6 +161,7 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+    
     public void OnAttackButton()
     {
         phase = Phase.PlayerCharacterTargetSelection;
@@ -186,10 +189,24 @@ public class GameManager : MonoBehaviour
             mapManager.ResetAttackablePanels(attackableTiles);
             phase = Phase.PlayerCharacterSelection;
         }
+        if(phase == Phase.EnemyCharacterTargetSelection)
+        {
+            actionCommandUI.Show(false);
+            selectedCharacter = null;
+            mapManager.ResetAttackablePanels(attackableTiles);
+            EnemyCharacterSelection();
+        }
         
     }
     void OnPlayerTurnEnd()
-    {
+    {   
+        foreach (var chara in charactersManager.characters)
+        {
+            if (chara.IsEnemy)
+            {
+                chara.OnBeginTurn();
+            }
+        }
         //敵のフェーズへ
         Debug.Log("相手ターン");
         phase = Phase.EnemyCharacterSelection;
@@ -205,22 +222,68 @@ public class GameManager : MonoBehaviour
     {   
         Debug.Log("敵キャラ選択");
         //--- characterManagerからランダムに敵を持ってくる
-        selectedCharacter = charactersManager.GetRandomEnemy();
-
-        mapManager.ResetMovablePanels(movableTiles);
-        //移動範囲を表示
-        mapManager.ShowMovablePanels(selectedCharacter, movableTiles);  
-        EnemyCharacterMoveSelection();
+        selectedCharacter = charactersManager.GetMovableEnemy();
+        if(selectedCharacter)
+        {
+            mapManager.ResetMovablePanels(movableTiles);
+            //移動範囲を表示
+            mapManager.ShowMovablePanels(selectedCharacter, movableTiles);  
+            EnemyCharacterMoveSelection();
+        }
+        else
+        {
+            OnEnemyTurnEnd();
+        }
     }
-    // 移動
+
+    //ここが怪しい↓EnemyCharacterMoveSelection();が記述していない
     void EnemyCharacterMoveSelection()
-    {
-        //ランダムに移動場所を決めて移動する
-        int r = Random.Range(0, movableTiles.Count);
-        // selectedCharacter.Move(movableTiles[r].positionInt);
-        selectedCharacter.Move(movableTiles[r].positionInt, mapManager.GetRoot(selectedCharacter, movableTiles[r]));
+    {   
+        //手順
+        // ターゲトとなるPlayerを見つける => 一番近いPlayer
+        Character target = charactersManager.GetClosetCharacter(selectedCharacter);
+        // 移動範囲の中で、Playerに近い場所を探す
+        TileObj targetTile = movableTiles
+            .OrderBy(tile => Vector2.Distance(target.Position, tile.positionInt))//小さい順に並べ変える
+            .FirstOrDefault(); // 最初のタイルを渡す
+
+        selectedCharacter.Move(targetTile.positionInt,mapManager.GetRoot(selectedCharacter,targetTile), EnemyCharacterTargetSelection);
         mapManager.ResetMovablePanels(movableTiles);
-        OnEnemyTurnEnd();
+    }
+
+    // 敵の攻撃
+    void EnemyCharacterTargetSelection()
+    {    
+        phase = Phase.EnemyCharacterTargetSelection;
+        // 攻撃範囲の取得
+        //範囲内にPlayerのキャラがいれば取得
+        //Playerがいるなら攻撃を実行する
+
+        mapManager.ResetAttackablePanels(attackableTiles);
+        mapManager.ShowAttackablePanels(selectedCharacter, attackableTiles);
+        //範囲内にPlayerのキャラがいれば取得
+        Character targetChara = null;
+        foreach (var tile in attackableTiles) 
+        {   
+            Character character = charactersManager.GetCharacter(tile.positionInt);
+            if(character && character.IsEnemy == false)
+            {
+                targetChara = character;
+            }
+        }
+        //ターゲットがいるなら攻撃を実行する
+        if(targetChara)
+        {
+            //攻撃処理
+            int damage = selectedCharacter.Attack(targetChara);
+            mapManager.ResetAttackablePanels(attackableTiles);
+            actionCommandUI.Show(false);
+            damageUI.Show(targetChara, damage); 
+        }
+        else
+        {
+            EnemyCharacterSelection();
+        }
     }
 
     void OnEnemyTurnEnd()
@@ -229,6 +292,7 @@ public class GameManager : MonoBehaviour
         selectedCharacter = null;
         phase = Phase.PlayerCharacterSelection;
         StartCoroutine(phasePanelUI.PanelAnim("ふみやのターン"));
+        mapManager.ResetAttackablePanels(attackableTiles);
         turnEndButton.SetActive(true);
         foreach (var chara in charactersManager.characters)
         {
@@ -246,8 +310,7 @@ public class GameManager : MonoBehaviour
     }
 } 
 
-//TODO:エラー
-// ・攻撃した場合に勝手に相手ターンになってしまうバグ
-//一度行動した場合に勝手に相手ターンになってしまう
-// => 移動したかどうかのフラグ(bool)をつくってやればいい
+// 全ての敵が動いたらPlayerのターンになる TODO
+// ・移動したかどうかを確認していなければターン終了
+
 
